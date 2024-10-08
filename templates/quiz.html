@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Tipo de Pele</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-color: #f7f9fc;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #6c757d;
+        }
+        .question {
+            display: none;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+        .active {
+            display: block;
+        }
+        h3 {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5a54d8;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quiz: Qual é o seu tipo de pele?</h1>
+    <form id="quizForm" action="{{ url_for('result') }}" method="post">
+        {% for question in questions %}
+            <div class="question" id="question-{{ loop.index0 }}">
+                <h3>{{ question.question }}</h3>
+                {% for option in question.options %}
+                    <label>
+                        <input type="radio" name="question-{{ loop.index0 }}" value="{{ option }}" 
+                               onclick="saveAnswer({{ loop.index0 }}, '{{ option }}')">
+                        {{ option }}
+                    </label>
+                {% endfor %}
+                <button type="button" onclick="nextQuestion({{ loop.index0 }})">Próxima</button>
+            </div>
+        {% endfor %}
+        <input type="hidden" name="answers" id="answers">
+    </form>
+
+    <script>
+        let currentQuestion = 0;
+        const questions = document.querySelectorAll('.question');
+
+        function showQuestion(index) {
+            questions.forEach((q, i) => {
+                q.classList.toggle('active', i === index);
+            });
+            loadAnswer(index);
+        }
+
+        function nextQuestion(index) {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                showQuestion(currentQuestion);
+            } else {
+                document.getElementById('answers').value = JSON.stringify(getAnswers());
+                document.getElementById('quizForm').submit();
+            }
+        }
+
+        function saveAnswer(index, answer) {
+            localStorage.setItem('question-' + index, answer);
+        }
+
+        function loadAnswer(index) {
+            const savedAnswer = localStorage.getItem('question-' + index);
+            if (savedAnswer) {
+                const inputs = document.querySelectorAll(`input[name="question-${index}"]`);
+                inputs.forEach(input => {
+                    if (input.value === savedAnswer) {
+                        input.checked = true;
+                    }
+                });
+            }
+        }
+
+        function getAnswers() {
+            const answers = {};
+            for (let i = 0; i < questions.length; i++) {
+                answers[`question-${i}`] = localStorage.getItem(`question-${i}`);
+            }
+            return answers;
+        }
+
+        // Inicializar mostrando a primeira pergunta
+        showQuestion(currentQuestion);
+    </script>
+</body>
+</html>

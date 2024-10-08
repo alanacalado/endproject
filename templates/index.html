@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Quiz de Tipo de Pele</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            color: #6c757d;
+        }
+        p {
+            margin: 20px 0;
+            text-align: center;
+        }
+        a {
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #6c5ce7;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        a:hover {
+            background-color: #5a54d8;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bem-vindo ao Quiz de Tipo de Pele!</h1>
+    <p>Responda as perguntas para descobrir qual é o seu tipo de pele.</p>
+    <a href="{{ url_for('quiz') }}">Iniciar Quiz</a>
+</body>
+</html>
